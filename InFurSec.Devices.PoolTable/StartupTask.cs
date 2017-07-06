@@ -22,21 +22,28 @@ namespace InFurSec.Devices.PoolTable
             // Get deferral, so the task doesn't just immediately exit
             deferral = taskInstance.GetDeferral();
 
-            HttpServer server = new HttpServer(8040);
-            server.AddHttpRequestHandler(
-                "/",
-                new HttpResourceHandler(
-                    typeof(StartupTask).GetTypeInfo().Assembly, // Utilities.GetContainingAssembly(typeof(StartupTask)),
-                    "wwwroot",
-                    "index.html"
-                )
-            );
-            server.AddWebSocketRequestHandler(
-                "/sockets/",
-                new WebSocketHandler()
-            );
+            try
+            {
+                HttpServer server = new HttpServer(8040);
+                server.AddHttpRequestHandler(
+                    "/",
+                    new HttpResourceHandler(
+                        typeof(StartupTask).GetTypeInfo().Assembly, // Utilities.GetContainingAssembly(typeof(StartupTask)),
+                        "wwwroot",
+                        "index.html"
+                    )
+                );
+                server.AddWebSocketRequestHandler(
+                    "/sockets/",
+                    new WebSocketHandler()
+                );
 
-            server.Start();
+                server.Start();
+            }
+            catch
+            {
+                deferral.Complete();
+            }
         }
     }
 }
